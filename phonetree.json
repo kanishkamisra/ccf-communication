@@ -1,0 +1,14 @@
+{
+	"David": {
+		"ReportsTo": "",
+		"Phone": "+18127203028"
+	},
+	"Kanishka": {
+		"ReportsTo" : "David",
+		"Phone": "+15512324547"
+	},
+	"Home": {
+		"ReportsTo" : "Kanishka",
+		"Phone" : "+12625775781"
+	}
+}

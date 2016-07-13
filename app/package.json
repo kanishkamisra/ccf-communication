@@ -1,0 +1,27 @@
+{
+  "name": "aitp-communication",
+  "version": "1.0.0",
+  "description": "Communication System for CCF Fall'16",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kanishkamisra/aitp-communication.git"
+  },
+  "author": "Kanishka Misra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kanishkamisra/aitp-communication/issues"
+  },
+  "homepage": "https://github.com/kanishkamisra/aitp-communication#readme",
+  "dependencies": {
+    "twilio":"latest",
+    "express": "latest",
+    "body-parser": "latest",
+    "json": "latest",
+    "ejs": "latest",
+    "jsonfile": "latest"
+  }
+}
