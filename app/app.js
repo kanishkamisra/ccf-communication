@@ -5,14 +5,19 @@ var express = require('express'),
 	path = require('path'),
 	fs = require('fs');
 
-var phone = require('../phonetree.json')
+var phone = require('../phonetree.json'),
+	phonetest = require('../phonetest.json'),
+	recruiter = require('../recruiter.json')
 
 var app = express();
 app.use(bodyParser.urlencoded({ 
 	extended: true 
 }));
 
-var auth='AUTH_TOKEN';
+app.use('/', express.static(__dirname + '/public'));
+
+// var auth='AUTH_TOKEN';
+var auth='91c4b91672fd9b9f4b4d4bd18446d090';
 
 app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname + "/public/index.html"));
@@ -24,8 +29,8 @@ app.post('/text', function(req, res) {
 		var twiml = new twilio.TwimlResponse();
 		var message = req.body.Body;
 		// console.log(req.body.From)
-		for (var i in phone) {
-			if (req.body.From === phone[i].Phone){
+		for (var i in phonetest) {
+			if (req.body.From === phonetest[i].Phone){
 				// console.log(phone[i].Phone)
 				// console.log("1")
 				// if(i === 'Kanishka') {
@@ -34,10 +39,23 @@ app.post('/text', function(req, res) {
 				// else if (i != 'Kanishka') {
 				// 	receiver = phone[phone[i].ReportsTo].Phone;
 				// }
-				receiver = phone[phone[i].ReportsTo].Phone;
-				console.log(receiver);
+				manager_status = phonetest[phonetest[i].ReportsTo].Status;
+				manager_reports_to = phonetest[phonetest[i].ReportsTo].ReportsTo;
+				manager_reports_to_number = phonetest[manager_reports_to].Phone
 
-				message = message + " Message sent by " + i + "\n Number = " + req.body.From;
+				if(manager_status === 'free') {
+					receiver = phonetest[phonetest[i].ReportsTo].Phone;
+					console.log(receiver);
+
+					message = message + " Message sent by " + i + "\n Number = " + req.body.From;
+				}
+				else {
+					receiver = manager_reports_to_number;
+					console.log(receiver);
+					message = message + " Message sent by " + i + "\n Number = " + req.body.From;
+				}
+
+
 			}
 
 			// else {
@@ -65,8 +83,8 @@ app.post('/call', function(req, res) {
 	if(twilio.validateExpressRequest(req, auth)) {
 		var receiver = 'RECEIVER_NUMBER';
 		var twiml = new twilio.TwimlResponse();
-		for (var i in phone) {
-			if (req.body.From === phone[i].Phone){
+		for (var i in phonetest) {
+			if (req.body.From === phonetest[i].Phone){
 				// console.log(phone[i].Phone)
 				// console.log("1")
 				// if(i === 'Kanishka') {
@@ -75,15 +93,22 @@ app.post('/call', function(req, res) {
 				// else if (i != 'Kanishka') {
 				// 	receiver = phone[phone[i].ReportsTo].Phone;
 				// }
-				receiver = phone[phone[i].ReportsTo].Phone;
-				console.log(receiver);
+				manager_status = phonetest[phonetest[i].ReportsTo].Status;
+				manager_reports_to = phonetest[phonetest[i].ReportsTo].ReportsTo;
+				manager_reports_to_number = phonetest[manager_reports_to].Phone
 
-				// message = message + " Message sent by " + i + "\n Number = " + req.body.From;
+				if(manager_status === 'free') {
+					receiver = phonetest[phonetest[i].ReportsTo].Phone;
+					console.log(receiver);
+				}
+				else {
+					receiver = manager_reports_to_number;
+					console.log(receiver);
+				}
 			}
 
 			else {
-				//add status = busy functionality
-				receiver = phone['David'];
+				receiver = phonetest['David'];
 			}
 		}
 
@@ -109,16 +134,34 @@ app.post("/log", function(req, res) {
 	var n = req.body.name;
 	var r = req.body.reports;
 	var p = req.body.phone;
+	var s = req.body.status;
 
 	phone[n] = {
 		"ReportsTo": r,
-		"Phone": p
+		"Phone": p,
+		"Status": s
 	}
 
 	fs.writeFileSync("../phonetest.json", JSON.stringify(phone));
 });
 
-//testing
+app.post("/addRecruiter", function(req, res) {
+	res.sendFile(path.join(__dirname + "/public/index.html"))
+
+	var n = req.body.recruiterName;
+	var c = req.body.recruiterCompany;
+	var p = req.body.recruiterPhone;
+
+	recruiter[c] = {
+		"Name": n,
+		"Phone": p
+	}
+
+	fs.writeFileSync("../recruiter.json", JSON.stringify(recruiter));
+});
+
+
+//test
 // app.get('/test', function(req, res) {
 // 	console.log(phone);
 // })

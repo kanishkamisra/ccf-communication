@@ -1,14 +1,17 @@
 {
 	"David": {
 		"ReportsTo": "",
-		"Phone": "+18127203028"
+		"Phone": "+18127203028",
+		"Status": "Free"
 	},
 	"Kanishka": {
 		"ReportsTo" : "David",
-		"Phone": "+15512324547"
+		"Phone": "+15512324547",
+		"Status": "Free"
 	},
 	"Home": {
 		"ReportsTo" : "Kanishka",
-		"Phone" : "+12625775781"
+		"Phone" : "+12625775781",
+		"Status": "Busy"
 	}
 }
