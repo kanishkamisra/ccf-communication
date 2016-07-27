@@ -61,6 +61,7 @@
 		:-ms-input-placeholder {  
 		   color: rgb(235, 114, 96);  
 		}
+
 	</style>
 	<body>
 		<div class="container">
@@ -93,6 +94,14 @@
 			    <div class="col-md-3"><div class="form-group normal"><input type="text" class="form-control" name="recruiterPhone" placeholder="Recruiter Phone"></div></div> 
 			    <div class="col-md-3"><input type="submit" class="btn btn-info" value="Submit"></div>
 			    <!-- <input type="submit" value="Submit"> -->
+			</form>
+		</div>
+
+		<div class="container">
+			<h2>Send Mass Texts</h2>
+			<form method = "post" action="/sendMassTexts">
+				 <div class="col-md-6"><div class="form-group normal"><input type="text" class="form-control message" name="textMessage" placeholder="Message"></div></div>
+				<div class="col-md-3 col-md-offset-1"><input type="submit" role = "button" class="btn btn-info" value="Submit"></div>
 			</form>
 		</div>
 		<!-- Latest compiled and minified JavaScript -->

@@ -17,7 +17,8 @@ app.use(bodyParser.urlencoded({
 app.use('/', express.static(__dirname + '/public'));
 
 // var auth='AUTH_TOKEN';
-var auth='91c4b91672fd9b9f4b4d4bd18446d090';
+var auth = '91c4b91672fd9b9f4b4d4bd18446d090';
+var sid = 'ACa4d163be354bc5922d08fa6a13629331';
 
 app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname + "/public/index.html"));
@@ -25,7 +26,7 @@ app.get('/', function(req, res) {
 
 app.post('/text', function(req, res) {
 	if(twilio.validateExpressRequest(req, auth)) {
-		var receiver='RECEIVER_NUMBER'
+		var receiver = 'RECEIVER_NUMBER'
 		var twiml = new twilio.TwimlResponse();
 		var message = req.body.Body;
 		// console.log(req.body.From)
@@ -43,10 +44,9 @@ app.post('/text', function(req, res) {
 				manager_reports_to = phonetest[phonetest[i].ReportsTo].ReportsTo;
 				manager_reports_to_number = phonetest[manager_reports_to].Phone
 
-				if(manager_status === 'free') {
+				if(manager_status === 'free' || manager_status === 'Free') {
 					receiver = phonetest[phonetest[i].ReportsTo].Phone;
 					console.log(receiver);
-
 					message = message + " Message sent by " + i + "\n Number = " + req.body.From;
 				}
 				else {
@@ -97,7 +97,7 @@ app.post('/call', function(req, res) {
 				manager_reports_to = phonetest[phonetest[i].ReportsTo].ReportsTo;
 				manager_reports_to_number = phonetest[manager_reports_to].Phone
 
-				if(manager_status === 'free') {
+				if(manager_status === 'free' || manager_status === 'Free') {
 					receiver = phonetest[phonetest[i].ReportsTo].Phone;
 					console.log(receiver);
 				}
@@ -158,8 +158,33 @@ app.post("/addRecruiter", function(req, res) {
 	}
 
 	fs.writeFileSync("../recruiter.json", JSON.stringify(recruiter));
+	// Add recruiter numbers to numbers.txt file
+	// fs.appendFile("../numbers.txt", p, function(err) {
+	// 	if(err){
+	// 		console.log(err)
+	// 	}
+	// });
 });
 
+app.post('/sendMassTexts', function(req, res) {
+
+	res.sendFile(path.join(__dirname + "/public/index.html"))
+	var client = new twilio.RestClient(sid, auth);
+
+	var numbers = fs.readFileSync("../numbers.txt").toString().split('\n')
+
+	for(var n in numbers){
+		client.messages.create({
+			body: req.body.textMessage,
+			to: numbers[n],
+			from: "+18608650052"
+		}, function(err, message){
+			if(err) {
+				console.error(err.message);
+			}
+		});
+	}
+})
 
 //test
 // app.get('/test', function(req, res) {
