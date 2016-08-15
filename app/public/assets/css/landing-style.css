@@ -1,0 +1,86 @@
+html,
+body {
+	height: 100%;
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	/*color: #6c6f73;*/
+}
+
+h6 {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 0.8rem;
+	letter-spacing: 0.1rem;
+}
+
+.blockquote {
+	font-size: 1.6rem;
+	color: #333;
+	border: none;
+	padding: 0;
+}
+
+.blockquote-footer {
+	margin: 1rem 0 0;
+}
+
+#stage {
+	font-family: "Montserrat", sans-serif;
+	background: url("/assets/img/ccf-one.jpg") center center no-repeat ;
+	background-size: cover;
+	color: #45adc8;
+	/*color: #eb3144;*/
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+}
+
+#stage-caption {
+	font-size: 1.4rem;
+	font-weight: 200;
+	max-width: 60rem;
+	text-align: center;
+	margin: 0 auto;
+}
+
+#stage-caption h1 {
+	font-weight: bold;
+	text-transform: uppercase;
+}	
+
+
+.feature-content {
+	padding: 8rem 0;
+	overflow: hidden;
+}
+
+.feature-dark {
+	background: #262F36;
+	color: white;
+}
+
+.feature-dark h2 {
+	color: white;
+}
+
+#ui-main {
+	height: 75%;
+	width: 75%;
+	margin-bottom: -8rem;
+	/*margin-top: -2rem;*/
+	box-shadow: 0 -5px 10px -5px #333,  5px 0 10px -6px #333, -5px 0 10px -6px #333;
+}
+
+#ui-head {
+	margin-bottom: 2rem;
+	margin-top: -4rem;
+}
+
+#ui-features {
+	height: 90%;
+	width: 90%;
+}

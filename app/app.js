@@ -16,12 +16,20 @@ app.use(bodyParser.urlencoded({
 
 app.use('/', express.static(__dirname + '/public'));
 
-// var auth='AUTH_TOKEN';
-var auth = '91c4b91672fd9b9f4b4d4bd18446d090';
-var sid = 'ACa4d163be354bc5922d08fa6a13629331';
+var auth='AUTH_TOKEN';
+var sid='TWILIO_SID';
 
 app.get('/', function(req, res) {
 	res.sendFile(path.join(__dirname + "/public/index.html"));
+});
+
+app.get('/home', function(req, res){
+	res.sendFile(path.join(__dirname + "/public/landing.html"))
+});
+
+//ui-test route
+app.get('/uitest', function(req, res){
+	res.sendFile(path.join(__dirname + "/public/ui-test.html"))
 });
 
 app.post('/text', function(req, res) {
@@ -136,13 +144,19 @@ app.post("/log", function(req, res) {
 	var p = req.body.phone;
 	var s = req.body.status;
 
-	phone[n] = {
+	phonetest[n] = {
 		"ReportsTo": r,
 		"Phone": p,
 		"Status": s
 	}
 
-	fs.writeFileSync("../phonetest.json", JSON.stringify(phone));
+	fs.writeFileSync("../phonetest.json", JSON.stringify(phonetest));
+
+	fs.appendFile("../numbers.txt", "\n" + p, function(err){
+		if(err) {
+			console.log(err);
+		}
+	});
 });
 
 app.post("/addRecruiter", function(req, res) {
@@ -152,12 +166,17 @@ app.post("/addRecruiter", function(req, res) {
 	var c = req.body.recruiterCompany;
 	var p = req.body.recruiterPhone;
 
-	recruiter[c] = {
-		"Name": n,
+	recruiter[n] = {
+		"Company": c,
 		"Phone": p
 	}
 
 	fs.writeFileSync("../recruiter.json", JSON.stringify(recruiter));
+	fs.appendFile("../recruiterNumbers.txt", p, function(err){
+		if(err){
+			console.log(err);
+		}
+	});
 	// Add recruiter numbers to numbers.txt file
 	// fs.appendFile("../numbers.txt", p, function(err) {
 	// 	if(err){
@@ -166,25 +185,67 @@ app.post("/addRecruiter", function(req, res) {
 	// });
 });
 
+
+app.post("/changeStatus", function(req, res){
+	res.sendFile(path.join(__dirname + "/public/index.html"))
+
+	// var statusTest = require("../status-test.json")
+	var phoneTest = require("../phonetest.json")
+
+	var n = req.body.volunteerName;
+	var s = req.body.volunteerStatus;
+
+	n = n[0].toUpperCase() + n.slice(1);
+	// test if it works
+	// console.log("Name: " + n + " Status: " + s)
+	// It works!
+
+	phoneTest[n].Status = s;
+	console.log(n+"\'s status is now " + phoneTest[n].Status)
+	// phonetest[n].Status = s
+	// console.log(statusTest[n])
+	fs.writeFileSync("../phonetest.json", JSON.stringify(phoneTest));
+	console.log("fml")
+
+});
+
 app.post('/sendMassTexts', function(req, res) {
 
 	res.sendFile(path.join(__dirname + "/public/index.html"))
 	var client = new twilio.RestClient(sid, auth);
 
-	var numbers = fs.readFileSync("../numbers.txt").toString().split('\n')
+	var volunteerNumbers = fs.readFileSync("../numbers.txt").toString().split('\n')
+	var recruiterNumbers = fs.readFileSync("../recruiterNumbers.txt").toString().split('\n')
 
-	for(var n in numbers){
-		client.messages.create({
-			body: req.body.textMessage,
-			to: numbers[n],
-			from: "+18608650052"
-		}, function(err, message){
-			if(err) {
-				console.error(err.message);
-			}
-		});
+	if(req.body.messageList === "Volunteers"){
+		for(var n in volunteerNumbers){
+			client.messages.create({
+				body: req.body.textMessage,
+				to: volunteerNumbers[n],
+				from: "+18608650052"
+			}, function(err, message){
+				if(err) {
+					console.error(err.message);
+				}
+			});
+		}
+	}
+
+	else if(req.body.messageList === "Recruiters"){
+		for(var n in recruiterNumbers){
+			client.messages.create({
+				body: req.body.textMessage,
+				to: recruiterNumbers[n],
+				from: "+18608650052"
+			}, function(err, message){
+				if(err) {
+					console.error(err.message);
+				}
+			});
+		}
 	}
 })
+
 
 //test
 // app.get('/test', function(req, res) {
